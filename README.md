@@ -23,3 +23,7 @@ Before crafting a viable solution, let us first define important terms.
 ## Design Rationale
 
 How will we implement project? How does the algorithm prevent deadlocks and starvation? Are they still technically possible?
+
+## Resources
+
+https://www.geeksforgeeks.org/reentrant-lock-java/

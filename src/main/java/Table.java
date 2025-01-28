@@ -39,7 +39,7 @@ public class Table {
         }
 
         try {
-            // Run for 5 seconds
+            // Run for 10 seconds
             Thread.sleep(10000);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

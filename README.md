@@ -35,5 +35,7 @@ In our Table class, we run the simulation logging each time a philosopher thinks
 ## Resources
 
 https://www.geeksforgeeks.org/reentrant-lock-java/
+
 https://www.geeksforgeeks.org/java-program-to-create-a-thread/
+
 https://docs.oracle.com/cd/E17802_01/j2se/j2se/1.5.0/jcp/beta1/apidiffs/java/util/concurrent/locks/ReentrantLock.html

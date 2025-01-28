@@ -26,11 +26,11 @@ To start, we created two classes. First, we created the Philosopher class, which
 
 Our Philosopher class also extends the Thread class - enabling us to override the run() method to create new threads. Within run(), we call two private methods for thinking and eating until eventually the thread is interrupted (or, if an exception is thrown, it is caught and outputted). Thinking and eating both wait a random amount of time no greater than 3 seconds. Eating manually locks and unlocks access to each fork.
 
-As discussed in class, even with the locks in place, we can observe a deadlock if all philosophers grab their left fork at the same time (as none of their right forks would be available). Keeping this in mind, while designing the Table class, we ensured that the last philosopher (with id of N - 1) picks up his right fork first. This guarantees that no deadlock can ever be reached since even if each philosopher becomes hungry at the same time, at least one philosopher will be able to hold access to both forks and, once he releases them, others will be able to eat. That is, there is never a situation with this change where every philosopher has only one fork and cannot gain access to the other. 
+As discussed in class, even with the locks in place, we can observe a deadlock if all philosophers grab their left fork at the same time (as none of their right forks would be available). Keeping this in mind, while designing the Table class, we ensured that the last philosopher (with id of N - 1) picks up his right fork first. This guarantees that no deadlock can ever be reached since even if each philosopher becomes hungry at the same time, at least one philosopher will be able to hold access to both forks and, once he releases them, others will be able to eat. That is, there is never a situation with this change where every philosopher has only one fork and cannot gain access to the other. I wrapped all the logic in try / finally blocks so that any time a resource is locked, it will always be unlocked.
 
 Lastly, to solve the issue of starvation, or a situation where one philosopher keeps trying to pick up a fork and eat but is continually blocked, we needed to modify our reeentrant lock by setting the fairness parameter to true. By intitializing as "new ReentrantLock(true)", then, under contention for the fork, the lock will favor giving access to the longest-waiting thread / philosopher.
 
-In our Table class, we run the simulation logging each time a philosopher thinks, picks up or puts down a fork, and eats over 10 seconds.
+In our Table class, we run the simulation logging each time a philosopher thinks, picks up or puts down a fork, and eats over 10 seconds. We end by interrupting each of the philosophers (threads), waiting for the threads to complete their execution, and log the number of times each philosopher has eaten using the shared hashmap eatingCount. Since I used synchronized on eatingCount, I avoided any race conditions (another design choice could have used ConcurrentHashMap, but I think manually leveraging synchronized helped me to better understand what's going on "under the hood").
 
 ## Resources
 
@@ -39,3 +39,5 @@ https://www.geeksforgeeks.org/reentrant-lock-java/
 https://www.geeksforgeeks.org/java-program-to-create-a-thread/
 
 https://docs.oracle.com/cd/E17802_01/j2se/j2se/1.5.0/jcp/beta1/apidiffs/java/util/concurrent/locks/ReentrantLock.html
+
+https://www.geeksforgeeks.org/joining-threads-in-java/

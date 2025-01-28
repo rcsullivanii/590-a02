@@ -15,7 +15,8 @@ public class Table {
         ReentrantLock[] forks = new ReentrantLock[NUM_PHILOSOPHERS];
 
         for (int i = 0; i < NUM_PHILOSOPHERS; i++) {
-            forks[i] = new ReentrantLock();
+            // set fair paramter to true to prevent starvation (one philosopher continually being denied forks)
+            forks[i] = new ReentrantLock(true);
         }
 
         for (int i = 0; i < NUM_PHILOSOPHERS; i++) {

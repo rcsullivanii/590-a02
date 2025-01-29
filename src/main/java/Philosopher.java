@@ -1,6 +1,7 @@
 package main.java;
 
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 // import Lock to control access to shared recourses (forks)
 // in our table class, we will create Philosophers with reentrant locks
 import java.util.concurrent.locks.Lock;
@@ -40,26 +41,34 @@ public class Philosopher extends Thread {
 
     private void eat() throws InterruptedException {
         // use try and finally to make sure that lock is released no matter what
-        leftFork.lock();
-        try {
-            System.out.println("Philosopher " + id + " acquired left fork");
-            rightFork.lock();
+        if (leftFork.tryLock(1000, TimeUnit.MILLISECONDS)) {
             try {
-                System.out.println("Philosopher " + id + " acquired right fork");
-                System.out.println("Philosopher " + id + " is eating");
-                
-                synchronized (eatingCount) {
-                    eatingCount.put(id, eatingCount.getOrDefault(id, 0) + 1);
+                System.out.println("Philosopher " + id + " acquired left fork");
+
+                // try to get right fork
+                if (rightFork.tryLock(1000, TimeUnit.MILLISECONDS)) {
+                    try {
+                        System.out.println("Philosopher " + id + " acquired right fork");
+                        System.out.println("Philosopher " + id + " is eating");
+
+                        synchronized (eatingCount) {
+                            eatingCount.put(id, eatingCount.getOrDefault(id, 0) + 1);
+                        }
+
+                        Thread.sleep((int) (Math.random() * 3000));
+                    } finally {
+                        rightFork.unlock();
+                        System.out.println("Philosopher " + id + " released right fork");
+                    }
+                } else {
+                    System.out.println("Philosopher " + id + " could not get right fork and is retrying.");
                 }
-                
-                Thread.sleep((int) (Math.random() * 3000));
             } finally {
-                rightFork.unlock();
-                System.out.println("Philosopher " + id + " released right fork");
+                leftFork.unlock();
+                System.out.println("Philosopher " + id + " released left fork");
             }
-        } finally {
-            leftFork.unlock();
-            System.out.println("Philosopher " + id + " released left fork");
+        } else {
+            System.out.println("Philosopher " + id + " could not acquire left fork and is retrying.");
         }
     }
 }
